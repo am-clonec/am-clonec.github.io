@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>cloneweb: AchievementsAPI</title>
+
+    <style>
+        @font-face {
+            font-family: "Geist Pixel Grid";
+            src: url("../Assets/GeistPixel-Grid.woff2") format("woff2");
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Geist Pixel Square";
+            src: url("../Assets/GeistPixel-Square.woff2") format("woff2");
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 48px 20px;
+            background: #1f2420;
+            color: #dbfffd;
+            font-family: "Geist Pixel Grid", "Geist Pixel Square", sans-serif;
+            line-height: 1.7;
+        }
+
+        main {
+            width: min(100%, 1440px);
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            color: #1d50d1;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            margin: 8px 0 24px;
+            color: #c9d9ff;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            line-height: 1;
+        }
+
+        h2 {
+            margin: 20px 0 10px;
+            color: #1d50d1;
+            font-size: 1.7rem;
+            font-weight: normal;
+        }
+
+        h3 {
+            margin: 36px 0 10px;
+            color: #1d50d1;
+            font-size: 2rem;
+            font-weight: normal;
+        }
+
+        h4 {
+            margin: 10px 0 10px;
+            color: #1d50d1;
+            font-size: 1.2rem;
+            font-weight: normal;
+        }
+
+        p {
+            margin: 12px 0;
+        }
+
+        a {
+            color: #c9d9ff;
+            text-decoration-color: #1d50d1;
+            text-underline-offset: 4px;
+        }
+
+        a:hover {
+            color: #5774bd;
+        }
+
+        .code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font: 14px/1.5 Consolas, monospace;
+        }
+
+        code {
+            background: #1e1e1e;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+        }
+
+
+        footer {
+            margin-top: 56px;
+            padding-top: 12px;
+            border-top: 1px dashed #444;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th:nth-child(-n+3),
+        td:nth-child(-n+3) {
+            white-space: nowrap;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            white-space: normal;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <div class="eyebrow">A cloneweb site</div>
+    <h1><a href="https://github.com/am-clonec/AchievementsAPI">Achievements API</a></h1>
+
+    <p>
+        Achievements API is a mod originally developed to be used in Stargazer.<br>It lets developers easily add their own achievements with a user-friendly in-game UI.
+    </p>
+
+    <h3>Get started</h3>
+
+    <p>
+        To start using Achievements API, you need to:<br>
+        - Add a reference to Mira API either through a DLL or project reference.<br>
+        - Add a BepInDependency or SoftDependency on your plugin class like this:<br>
+    </p>
+    <pre class="code"><code>[BepInDependency(AchievementsAPIPlugin.Id)]</code></pre>
+    <pre class="code"><code>[BepInDependency(AchievementsAPIPlugin.Id, BepInDependency.DependencyFlags.SoftDependency)]</code></pre>
+
+    <h2>Creating An Achievements Tab</h2>
+    <p>
+        To have a tab for your achievements to be stored in, you need to create a class implementing <code>AchievementsTab</code>.<br>
+        <code>AchievementsTab</code> has the following members that need to be implemented for your Achievements to function correctly:
+    </p>
+    <div class="table-scroll">
+        <table>
+            <tr>
+                <th>Member</th>
+                <th>Required</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>string Name { get; }</code></td>
+                <td>Yes</td>
+                <td>—</td>
+                <td>The name of the Achievements Tab, displayed in UI.</td>
+            </tr>
+            <tr>
+                <td><code>bool IsSelectable { get; }</code></td>
+                <td>No</td>
+                <td><code>true</code></td>
+                <td>Whether the tab should be selectable in the Achievements Menu. Handy for custom UI's or internal achievements.</td>
+            </tr>
+            <tr>
+                <td><code>Color GetTabColor()</code></td>
+                <td>No</td>
+                <td><code>new Color32(255, 255, 150, 255)</code></td>
+                <td>A method which gets the color of the Achievements Menu background when switching to this tab.</td>
+            </tr>
+            <tr>
+                <td><code>string IconPath { get; }</code></td>
+                <td>No</td>
+                <td><code>"AchievementsAPI.Resources.ExampleIcon.png"</code></td>
+                <td>The path to the tab's icon, for if you don't have it as a Sprite.</td>
+            </tr>
+            <tr>
+                <td><code>Sprite GetIcon()</code></td>
+                <td>No</td>
+                <td><code>SpriteTools.LoadSpriteFromPath(IconPath, Assembly.GetCallingAssembly(), 100)</code></td>
+                <td>A method which gets the icon of the tab, used for its icon in the Achievements Menu.</td>
+            </tr>
+        </table>
+    </div>
+
+    <h4>Example:</h4>
+    <pre class="code"><code>
+using AchievementsAPI.API;
+using UnityEngine;
+
+namespace TownOfExtra.Achievements;
+
+public class ExampleAchievementsTab : AchievementsTab
+{
+public override string Name => "Example";
+public override bool IsSelectable => true;
+
+public override Color GetTabColor() => return new Color32(255, 255, 150, 255);
+public override Sprite GetIcon() => "AchievementsAPI.Resources.ExampleIcon.png";
+}
+    </code></pre>
+
+    <h2>Creating Achievements</h2>
+    <h4>Single Unlock Achievements:</h4>
+    <p>For each single unlock achievement (requires one thing to unlock, no progress) you need to create a <code>BaseAchievement</code>.<br>
+        <code>BaseAchievement</code> has the following members that need to be implemented for your Achievement to function correctly:</p>
+    <div class="table-scroll">
+        <table>
+            <thead>
+            <tr>
+                <th>Member</th>
+                <th>Required</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>string Name</code></td>
+                <td>Yes</td>
+                <td>—</td>
+                <td>The achievement's name.</td>
+            </tr>
+            <tr>
+                <td><code>string Description</code></td>
+                <td>Yes</td>
+                <td>—</td>
+                <td>The achievement's description.</td>
+            </tr>
+            <tr>
+                <td><code>string IconPath</code></td>
+                <td>Yes*</td>
+                <td>—</td>
+                <td>The achievement's icon path. <em>*Use this constructor overload or provide a <code>Sprite Icon</code> directly.</em></td>
+            </tr>
+            <tr>
+                <td><code>Sprite Icon</code></td>
+                <td>Yes*</td>
+                <td>—</td>
+                <td>The achievement's icon. <em>*Use this constructor overload or provide an <code>IconPath</code> directly.</em></td>
+            </tr>
+            <tr>
+                <td><code>int Rarity</code></td>
+                <td>No</td>
+                <td><code>0</code></td>
+                <td>The achievement's rarity: <code>0</code> = common (default), <code>1</code> = rare (blue), <code>2</code> = epic (purple), <code>3</code> = legendary (yellow).</td>
+            </tr>
+            <tr>
+                <td><code>bool Hidden</code></td>
+                <td>No</td>
+                <td><code>false</code></td>
+                <td>Whether the achievement is hidden. Hidden achievements get the default icon, and their name and description are set to "Hidden Achievement" until unlocked.</td>
+            </tr>
+            <tr>
+                <td><code>bool HideRarity</code></td>
+                <td>No</td>
+                <td><code>true</code></td>
+                <td>Whether to hide the achievement's rarity if the achievement is hidden.</td>
+            </tr>
+            <tr>
+                <td><code>Assembly? Assembly</code></td>
+                <td>No</td>
+                <td><code>Assembly.GetCallingAssembly()</code></td>
+                <td>The assembly associated with the achievement, used to generate its <code>Id</code>.</td>
+            </tr>
+            <tr>
+                <td><code>bool Unlocked { get; }</code></td>
+                <td>No</td>
+                <td><code>false</code></td>
+                <td>Whether the achievement has been unlocked.</td>
+            </tr>
+            <tr>
+                <td><code>string Id { get; }</code></td>
+                <td>No</td>
+                <td><code>Assembly.GetName().Name + "_" + Name</code></td>
+                <td>The achievement's unique identifier.</td>
+            </tr>
+            <tr>
+                <td><code>void Unlock(bool showOnUI = true, bool doStorageUpdate = true)</code></td>
+                <td>No</td>
+                <td>—</td>
+                <td>Unlocks the achievement. <code>showOnUI</code> shows an unlock animation on the HUD. <code>doStorageUpdate</code> indicates whether to update storage again; this is used to make <code>CountAchievements</code> properly update.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>Example:</p>
+    <pre class="code"><code>public BaseAchievement Welcome { get; set; } = new BaseAchievement(
+    "Welcome!", "Launch the game with Achievements API installed.", "AchievementsAPI.Resources.ExampleIcon.png"
+);</code></pre>
+
+    <h4>Count Unlock Achievements:</h4>
+    <p>For each count unlock achievement (requires progression to unlock) you need to create a <code>CountAchievement</code>.<br>
+        <code>CountAchievement</code> has the following members that need to be implemented for your Achievement to function correctly:</p>
+    <div class="table-scroll">
+        <table>
+            <thead>
+            <tr>
+                <th>Member</th>
+                <th>Required</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>int CurrentValue</code></td>
+                <td>Yes</td>
+                <td>—</td>
+                <td>The current progress for this achievement.</td>
+            </tr>
+            <tr>
+                <td><code>int RequiredValue</code></td>
+                <td>Yes</td>
+                <td>—</td>
+                <td>The required progress to unlock this achievement.</td>
+            </tr>
+            <tr>
+                <td><code>bool ProgressPersists</code></td>
+                <td>No</td>
+                <td><code>true</code></td>
+                <td>Defines if the progress persists between games.</td>
+            </tr>
+            <tr>
+                <td><code>int Rarity</code></td>
+                <td>No</td>
+                <td><code>0</code></td>
+                <td>The achievement's rarity: <code>0</code> = common (default), <code>1</code> = rare (blue), <code>2</code> = epic (purple), <code>3</code> = legendary (yellow).</td>
+            </tr>
+            <tr>
+                <td><code>bool Hidden</code></td>
+                <td>No</td>
+                <td><code>false</code></td>
+                <td>Whether the achievement is hidden. Hidden achievements get the default icon, and their name and description are set to "Hidden Achievement" until unlocked.</td>
+            </tr>
+            <tr>
+                <td><code>bool HideRarity</code></td>
+                <td>No</td>
+                <td><code>true</code></td>
+                <td>Whether to hide the achievement's rarity if the achievement is hidden.</td>
+            </tr>
+            <tr>
+                <td><code>bool HideProgress</code></td>
+                <td>No</td>
+                <td><code>false</code></td>
+                <td>Whether to hide the achievement's progress if the achievement is hidden.</td>
+            </tr>
+            <tr>
+                <td><code>void Increment(int count, bool showOnUI = true)</code></td>
+                <td>No</td>
+                <td>—</td>
+                <td>Increments the progress of this achievement by <code>count</code>. <code>showOnUI</code> shows an unlock animation on the HUD.</td>
+            </tr>
+            <tr>
+                <td><code>void SetValue(int value, bool showOnUI = true)</code></td>
+                <td>No</td>
+                <td>—</td>
+                <td>Sets the progress of this achievement to <code>value</code>. <code>showOnUI</code> shows an unlock animation on the HUD.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>Example:</p>
+    <pre class="code"><code>public CountAchievement Taskmaster { get; set; } = new CountAchievement(
+    "Taskmaster", "Do 5 tasks", "AchievementsAPI.Resources.ExampleIcon.png", 0, 5
+);</code></pre>
+
+    <h2>Awarding Achievements</h2>
+    <p>To award an achievement, you need to find your achievements tab, via <code>AchievementsTabSingleton&lt;ToexAchievementsTab&gt;.Instance</code>.<br>
+        Once you have this instance, you can use it to access your achievements:</p>
+
+    <h4>Unlocking <code>BaseAchievement</code>s</h4>
+    <p>To unlock a <code>BaseAchievement</code>, you can use <code>achievement.Unlock();</code>, for example:<br>
+        <code>AchievementsTabSingleton&lt;ToexAchievementsTab&gt;.Instance.Welcome.Unlock();</code></p>
+
+    <h4>Progressing <code>CountAchievement</code>s</h4>
+    <p>To unlock a <code>CountAchievement</code>, you can use <code>achievement.Increment(Amount);</code> or <code>achievement.SetValue(Amount);</code>, for example:<br>
+        <code>AchievementsTabSingleton&lt;ToexAchievementsTab&gt;.Instance.Taskmaster.Increment(1);</code> would add 1 to the achievement progress<br>
+        and<br>
+        <code>AchievementsTabSingleton&lt;ToexAchievementsTab&gt;.Instance.Taskmaster.SetValue(10);</code> would immediately unlock the achievement</p>
+
+    <p>Examples:</p>
+    <pre class="code"><code>// Unlocking BaseAchievements
+[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Awake))]
+[HarmonyPatch(Priority.Last)]
+[HarmonyPostfix]
+public static void OnMainMenuAwakePostfix(MainMenuManager __instance)
+{
+    AchievementsTabSingleton&lt;ExampleTab&gt;.Instance.Welcome.Unlock();
+}
+
+// Progressing CountAchievements
+[HarmonyPostfix]
+[HarmonyPatch(nameof(PlayerControl.CompleteTask))]
+public static void PlayerCompleteTaskPostfix(PlayerControl __instance, uint idx)
+{
+    AchievementsTabSingleton&lt;ExampleTab&gt;.Instance.Taskmaster.Increment(1);
+}</code></pre>
+
+    <footer>idk what to put here</footer>
+</main>
+</body>
+</html>
